@@ -1,0 +1,24 @@
+{
+  "lastChangelogVersion": "0.79.8",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "medium",
+  "terminal": {
+    "clearOnShrink": true,
+    "showTerminalProgress": true
+  },
+  "steeringMode": "one-at-a-time",
+  "hideThinkingBlock": true,
+  "theme": "dark/dark",
+  "packages": [
+    "npm:pi-web-access",
+    "npm:pi-lens",
+    {
+      "source": "npm:pi-subagents",
+      "prompts": [
+        "+prompts/gather-context-and-clarify.md"
+      ]
+    },
+    "npm:pi-mcp-adapter"
+  ]
+}

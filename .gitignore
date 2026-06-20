@@ -1,0 +1,23 @@
+# Pi auth/session/private state
+agent/auth.json
+agent/trust.json
+agent/sessions/
+*.jsonl
+
+# Installed pi packages / dependencies (reinstallable)
+agent/npm/
+agent/git/
+agent/bin/
+node_modules/
+
+# Runtime / temp artifacts
+tmp/
+temp/
+cache/
+logs/
+*.log
+
+# Local/private overrides
+*.local.json
+.env
+.env.*
