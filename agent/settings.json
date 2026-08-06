@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.79.8",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "medium",
+  "lastChangelogVersion": "0.84.0",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-flash",
+  "defaultThinkingLevel": "high",
   "terminal": {
     "clearOnShrink": true,
     "showTerminalProgress": true
@@ -23,7 +23,7 @@
     "npm:pi-tool-display",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@narumitw/pi-plan-mode",
-    "npm:@juicesharp/rpiv-todo",
-    "npm:pi-defender"
-  ]
+    "npm:@juicesharp/rpiv-todo"
+  ],
+  "tuiMode": "fullscreen"
 }
