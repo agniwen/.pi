@@ -20,10 +20,10 @@
       ]
     },
     "npm:pi-mcp-adapter",
-    "npm:pi-tool-display",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@narumitw/pi-plan-mode",
-    "npm:@juicesharp/rpiv-todo"
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-deepseek-search"
   ],
   "tuiMode": "fullscreen"
 }
