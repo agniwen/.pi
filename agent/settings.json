@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.0",
+  "lastChangelogVersion": "0.84.1",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-flash",
   "defaultThinkingLevel": "high",
@@ -9,7 +9,7 @@
   },
   "steeringMode": "one-at-a-time",
   "hideThinkingBlock": true,
-  "theme": "dark/dark",
+  "theme": "light/dark",
   "packages": [
     "npm:pi-web-access",
     "npm:pi-lens",
@@ -25,5 +25,9 @@
     "npm:@juicesharp/rpiv-todo",
     "npm:pi-deepseek-search"
   ],
-  "tuiMode": "fullscreen"
+  "tuiMode": "fullscreen",
+  "images": {
+    "blockImages": true
+  },
+  "fullscreenScrollbar": "auto"
 }
