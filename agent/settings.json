@@ -9,7 +9,7 @@
   },
   "steeringMode": "one-at-a-time",
   "hideThinkingBlock": true,
-  "theme": "light/dark",
+  "theme": "dark/dark",
   "packages": [
     "npm:pi-web-access",
     "npm:pi-lens",
