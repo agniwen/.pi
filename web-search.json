@@ -1,5 +1,8 @@
 {
   "toolNames": {
     "webSearch": "web_search_general"
+  },
+  "ssrf": {
+    "allowRanges": ["198.18.0.0/15"]
   }
 }

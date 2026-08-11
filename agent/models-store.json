@@ -22,6 +22,7 @@
         "compat": {
           "supportsStore": false,
           "supportsDeveloperRole": false,
+          "maxTokensField": "max_tokens",
           "requiresReasoningContentOnAssistantMessages": true,
           "thinkingFormat": "deepseek"
         },
@@ -54,6 +55,7 @@
         "compat": {
           "supportsStore": false,
           "supportsDeveloperRole": false,
+          "maxTokensField": "max_tokens",
           "requiresReasoningContentOnAssistantMessages": true,
           "thinkingFormat": "deepseek"
         },
@@ -66,8 +68,8 @@
         }
       }
     ],
-    "checkedAt": 1786328067581,
-    "lastModified": 1786021098000,
-    "etag": "W/\"15596aeadbdb5757401fcd2de812dcda\""
+    "checkedAt": 1786406315546,
+    "lastModified": 1786365267000,
+    "etag": "W/\"b4b90d7425a9372c93969eba5176598c\""
   }
 }
