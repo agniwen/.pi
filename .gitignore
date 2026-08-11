@@ -14,6 +14,7 @@ node_modules/
 tmp/
 temp/
 cache/
+web-search-cache/
 logs/
 *.log
 

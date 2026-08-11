@@ -29,6 +29,40 @@ import type { BashToolDetails, EditToolDetails, ExtensionAPI, ReadToolDetails } 
 import { createBashTool, createEditTool, createReadTool, createWriteTool } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 
+type CompactRenderContext = {
+	lastComponent?: unknown;
+	state: {
+		callComponent?: Text;
+		callText?: string;
+	};
+};
+
+type ToolBackground = (text: string) => string;
+
+function renderCallLine(text: string, background: ToolBackground, context: CompactRenderContext): Text {
+	const component = new Text(text, 0, 1, background);
+	context.state.callComponent = component;
+	context.state.callText = text;
+	return component;
+}
+
+function renderCollapsedStatus(
+	status: string,
+	expanded: boolean,
+	background: ToolBackground,
+	context: CompactRenderContext,
+): Text | undefined {
+	const { callComponent, callText = "" } = context.state;
+	callComponent?.setCustomBgFn(background);
+	if (expanded) {
+		callComponent?.setText(callText);
+		return undefined;
+	}
+
+	callComponent?.setText(`${callText} ${status}`);
+	return new Text("", 0, 0);
+}
+
 export default function (pi: ExtensionAPI) {
 	const cwd = process.cwd();
 
@@ -39,12 +73,13 @@ export default function (pi: ExtensionAPI) {
 		label: "read",
 		description: originalRead.description,
 		parameters: originalRead.parameters,
+		renderShell: "self",
 
 		async execute(toolCallId, params, signal, onUpdate) {
 			return originalRead.execute(toolCallId, params, signal, onUpdate);
 		},
 
-		renderCall(args, theme, _context) {
+		renderCall(args, theme, context) {
 			let text = theme.fg("toolTitle", theme.bold("read "));
 			text += theme.fg("accent", args.path);
 			if (args.offset || args.limit) {
@@ -53,21 +88,38 @@ export default function (pi: ExtensionAPI) {
 				if (args.limit) parts.push(`limit=${args.limit}`);
 				text += theme.fg("dim", ` (${parts.join(", ")})`);
 			}
-			return new Text(text, 0, 0);
+			return renderCallLine(text, (value) => theme.bg("toolPendingBg", value), context);
 		},
 
-		renderResult(result, { expanded, isPartial }, theme, _context) {
-			if (isPartial) return new Text(theme.fg("warning", "Reading..."), 0, 0);
+		renderResult(result, { expanded, isPartial }, theme, context) {
+			if (isPartial) {
+				return renderCollapsedStatus(
+					theme.fg("warning", "Reading..."),
+					false,
+					(value) => theme.bg("toolPendingBg", value),
+					context,
+				)!;
+			}
+			const successBackground = (value: string) => theme.bg("toolSuccessBg", value);
+			const errorBackground = (value: string) => theme.bg("toolErrorBg", value);
 
 			const details = result.details as ReadToolDetails | undefined;
 			const content = result.content[0];
 
 			if (content?.type === "image") {
-				return new Text(theme.fg("success", "Image loaded"), 0, 0);
+				const status = theme.fg("success", "Image loaded");
+				return (
+					renderCollapsedStatus(status, expanded, successBackground, context) ??
+					new Text(status, 0, 0, successBackground)
+				);
 			}
 
 			if (content?.type !== "text") {
-				return new Text(theme.fg("error", "No content"), 0, 0);
+				const status = theme.fg("error", "No content");
+				return (
+					renderCollapsedStatus(status, expanded, errorBackground, context) ??
+					new Text(status, 0, 0, errorBackground)
+				);
 			}
 
 			const lineCount = content.text.split("\n").length;
@@ -76,6 +128,9 @@ export default function (pi: ExtensionAPI) {
 			if (details?.truncation?.truncated) {
 				text += theme.fg("warning", ` (truncated from ${details.truncation.totalLines})`);
 			}
+
+			const collapsed = renderCollapsedStatus(text, expanded, successBackground, context);
+			if (collapsed) return collapsed;
 
 			if (expanded) {
 				const lines = content.text.split("\n").slice(0, 15);
@@ -87,7 +142,7 @@ export default function (pi: ExtensionAPI) {
 				}
 			}
 
-			return new Text(text, 0, 0);
+			return new Text(text, 0, 0, successBackground);
 		},
 	});
 
@@ -98,23 +153,33 @@ export default function (pi: ExtensionAPI) {
 		label: "bash",
 		description: originalBash.description,
 		parameters: originalBash.parameters,
+		renderShell: "self",
 
 		async execute(toolCallId, params, signal, onUpdate) {
 			return originalBash.execute(toolCallId, params, signal, onUpdate);
 		},
 
-		renderCall(args, theme, _context) {
+		renderCall(args, theme, context) {
 			let text = theme.fg("toolTitle", theme.bold("$ "));
 			const cmd = args.command.length > 80 ? `${args.command.slice(0, 77)}...` : args.command;
 			text += theme.fg("accent", cmd);
 			if (args.timeout) {
 				text += theme.fg("dim", ` (timeout: ${args.timeout}s)`);
 			}
-			return new Text(text, 0, 0);
+			return renderCallLine(text, (value) => theme.bg("toolPendingBg", value), context);
 		},
 
-		renderResult(result, { expanded, isPartial }, theme, _context) {
-			if (isPartial) return new Text(theme.fg("warning", "Running..."), 0, 0);
+		renderResult(result, { expanded, isPartial }, theme, context) {
+			if (isPartial) {
+				return renderCollapsedStatus(
+					theme.fg("warning", "Running..."),
+					false,
+					(value) => theme.bg("toolPendingBg", value),
+					context,
+				)!;
+			}
+			const successBackground = (value: string) => theme.bg("toolSuccessBg", value);
+			const errorBackground = (value: string) => theme.bg("toolErrorBg", value);
 
 			const details = result.details as BashToolDetails | undefined;
 			const content = result.content[0];
@@ -136,6 +201,10 @@ export default function (pi: ExtensionAPI) {
 				text += theme.fg("warning", " [truncated]");
 			}
 
+			const background = exitCode === null || exitCode === 0 ? successBackground : errorBackground;
+			const collapsed = renderCollapsedStatus(text, expanded, background, context);
+			if (collapsed) return collapsed;
+
 			if (expanded) {
 				const lines = output.split("\n").slice(0, 20);
 				for (const line of lines) {
@@ -146,7 +215,7 @@ export default function (pi: ExtensionAPI) {
 				}
 			}
 
-			return new Text(text, 0, 0);
+			return new Text(text, 0, 0, background);
 		},
 	});
 
@@ -163,24 +232,41 @@ export default function (pi: ExtensionAPI) {
 			return originalEdit.execute(toolCallId, params, signal, onUpdate);
 		},
 
-		renderCall(args, theme, _context) {
+		renderCall(args, theme, context) {
 			let text = theme.fg("toolTitle", theme.bold("edit "));
 			text += theme.fg("accent", args.path);
-			return new Text(text, 0, 0);
+			return renderCallLine(text, (value) => theme.bg("toolPendingBg", value), context);
 		},
 
-		renderResult(result, { expanded, isPartial }, theme, _context) {
-			if (isPartial) return new Text(theme.fg("warning", "Editing..."), 0, 0);
+		renderResult(result, { expanded, isPartial }, theme, context) {
+			if (isPartial) {
+				return renderCollapsedStatus(
+					theme.fg("warning", "Editing..."),
+					false,
+					(value) => theme.bg("toolPendingBg", value),
+					context,
+				)!;
+			}
+			const successBackground = (value: string) => theme.bg("toolSuccessBg", value);
+			const errorBackground = (value: string) => theme.bg("toolErrorBg", value);
 
 			const details = result.details as EditToolDetails | undefined;
 			const content = result.content[0];
 
 			if (content?.type === "text" && content.text.startsWith("Error")) {
-				return new Text(theme.fg("error", content.text.split("\n")[0]), 0, 0);
+				const status = theme.fg("error", content.text.split("\n")[0]);
+				return (
+					renderCollapsedStatus(status, expanded, errorBackground, context) ??
+					new Text(status, 0, 0, errorBackground)
+				);
 			}
 
 			if (!details?.diff) {
-				return new Text(theme.fg("success", "Applied"), 0, 0);
+				const status = theme.fg("success", "Applied");
+				return (
+					renderCollapsedStatus(status, expanded, successBackground, context) ??
+					new Text(status, 0, 0, successBackground)
+				);
 			}
 
 			// Count additions and removals from the diff
@@ -195,6 +281,9 @@ export default function (pi: ExtensionAPI) {
 			let text = theme.fg("success", `+${additions}`);
 			text += theme.fg("dim", " / ");
 			text += theme.fg("error", `-${removals}`);
+
+			const collapsed = renderCollapsedStatus(text, expanded, successBackground, context);
+			if (collapsed) return collapsed;
 
 			if (expanded) {
 				for (const line of diffLines.slice(0, 30)) {
@@ -211,7 +300,7 @@ export default function (pi: ExtensionAPI) {
 				}
 			}
 
-			return new Text(text, 0, 0);
+			return new Text(text, 0, 0, successBackground);
 		},
 	});
 
@@ -222,28 +311,46 @@ export default function (pi: ExtensionAPI) {
 		label: "write",
 		description: originalWrite.description,
 		parameters: originalWrite.parameters,
+		renderShell: "self",
 
 		async execute(toolCallId, params, signal, onUpdate) {
 			return originalWrite.execute(toolCallId, params, signal, onUpdate);
 		},
 
-		renderCall(args, theme, _context) {
+		renderCall(args, theme, context) {
 			let text = theme.fg("toolTitle", theme.bold("write "));
 			text += theme.fg("accent", args.path);
 			const lineCount = args.content.split("\n").length;
 			text += theme.fg("dim", ` (${lineCount} lines)`);
-			return new Text(text, 0, 0);
+			return renderCallLine(text, (value) => theme.bg("toolPendingBg", value), context);
 		},
 
-		renderResult(result, { isPartial }, theme, _context) {
-			if (isPartial) return new Text(theme.fg("warning", "Writing..."), 0, 0);
+		renderResult(result, { expanded, isPartial }, theme, context) {
+			if (isPartial) {
+				return renderCollapsedStatus(
+					theme.fg("warning", "Writing..."),
+					false,
+					(value) => theme.bg("toolPendingBg", value),
+					context,
+				)!;
+			}
+			const successBackground = (value: string) => theme.bg("toolSuccessBg", value);
+			const errorBackground = (value: string) => theme.bg("toolErrorBg", value);
 
 			const content = result.content[0];
 			if (content?.type === "text" && content.text.startsWith("Error")) {
-				return new Text(theme.fg("error", content.text.split("\n")[0]), 0, 0);
+				const status = theme.fg("error", content.text.split("\n")[0]);
+				return (
+					renderCollapsedStatus(status, expanded, errorBackground, context) ??
+					new Text(status, 0, 0, errorBackground)
+				);
 			}
 
-			return new Text(theme.fg("success", "Written"), 0, 0);
+			const status = theme.fg("success", "Written");
+			return (
+				renderCollapsedStatus(status, expanded, successBackground, context) ??
+				new Text(status, 0, 0, successBackground)
+			);
 		},
 	});
 }
