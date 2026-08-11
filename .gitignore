@@ -17,6 +17,13 @@ cache/
 logs/
 *.log
 
+# Generated model catalog / mission runtime state
+agent/models-store.json
+agent/missions/
+
+# macOS metadata
+.DS_Store
+
 # Local/private overrides
 *.local.json
 .env
