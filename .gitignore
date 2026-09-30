@@ -29,3 +29,4 @@ agent/missions/
 *.local.json
 .env
 .env.*
+skills

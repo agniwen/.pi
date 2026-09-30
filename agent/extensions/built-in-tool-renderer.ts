@@ -32,7 +32,7 @@ import { isAbsolute, relative, sep } from "node:path";
 const COLLAPSED_PREVIEW_LINES = 8;
 const EXPANDED_PREVIEW_LINES = 40;
 const COMMAND_PREVIEW_LENGTH = 120;
-const OWN_TOOL_RENDERERS = new Set(["read", "bash", "edit", "write", "grep", "find", "ls", "Agent"]);
+const OWN_TOOL_RENDERERS = new Set(["read", "bash", "edit", "write", "grep", "find", "ls", "Agent", "codemode", "tool_search"]);
 const NON_GROUPABLE_TOOLS = new Set(["edit", "write", "apply_patch"]);
 const GROUP_PARENT = Symbol("compact-tool-group-parent");
 const GROUP_PATCH = Symbol.for("wen.pi.compact-tool-grouping");
@@ -625,6 +625,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalRead = createReadTool(cwd);
 	pi.registerTool({
+		...originalRead,
 		name: "read",
 		label: "read",
 		description: originalRead.description,
@@ -668,6 +669,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalBash = createBashTool(cwd);
 	pi.registerTool({
+		...originalBash,
 		name: "bash",
 		label: "bash",
 		description: originalBash.description,
@@ -703,6 +705,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalEdit = createEditTool(cwd);
 	pi.registerTool({
+		...originalEdit,
 		name: "edit",
 		label: "edit",
 		description: originalEdit.description,
@@ -738,6 +741,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalWrite = createWriteTool(cwd);
 	pi.registerTool({
+		...originalWrite,
 		name: "write",
 		label: "write",
 		description: originalWrite.description,
@@ -769,6 +773,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalGrep = createGrepTool(cwd);
 	pi.registerTool({
+		...originalGrep,
 		name: "grep",
 		label: "grep",
 		description: originalGrep.description,
@@ -798,6 +803,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalFind = createFindTool(cwd);
 	pi.registerTool({
+		...originalFind,
 		name: "find",
 		label: "find",
 		description: originalFind.description,
@@ -826,6 +832,7 @@ export default function builtInToolRenderer(pi: ExtensionAPI) {
 
 	const originalLs = createLsTool(cwd);
 	pi.registerTool({
+		...originalLs,
 		name: "ls",
 		label: "ls",
 		description: originalLs.description,

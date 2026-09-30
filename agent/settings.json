@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.85.0",
+  "lastChangelogVersion": "0.99.1",
   "defaultProvider": "deepseek",
-  "defaultModel": "deepseek-v4-flash",
+  "defaultModel": "deepseek-flash",
   "defaultThinkingLevel": "high",
   "terminal": {
     "clearOnShrink": true,
@@ -19,7 +19,6 @@
         "+prompts/gather-context-and-clarify.md"
       ]
     },
-    "npm:pi-mcp-adapter",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@narumitw/pi-plan-mode",
     "npm:@juicesharp/rpiv-todo",
@@ -29,5 +28,8 @@
   "images": {
     "blockImages": true
   },
-  "fullscreenScrollbar": "auto"
+  "fullscreenScrollbar": "auto",
+  "defaultTools": [
+    "+codemode"
+  ]
 }
