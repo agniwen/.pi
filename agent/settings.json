@@ -7,9 +7,7 @@
     "clearOnShrink": true,
     "showTerminalProgress": true
   },
-  "steeringMode": "one-at-a-time",
   "hideThinkingBlock": true,
-  "theme": "system/system",
   "packages": [
     "npm:pi-web-access",
     "npm:pi-lens",
@@ -24,11 +22,9 @@
     "npm:@juicesharp/rpiv-todo",
     "npm:pi-deepseek-search"
   ],
-  "tuiMode": "fullscreen",
   "images": {
     "blockImages": true
   },
-  "fullscreenScrollbar": "auto",
   "defaultTools": [
     "+codemode"
   ],
