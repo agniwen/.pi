@@ -21,6 +21,7 @@ logs/
 # Generated model catalog / mission runtime state
 agent/models-store.json
 agent/missions/
+agent/pi-subagents/
 
 # macOS metadata
 .DS_Store

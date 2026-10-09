@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.99.1",
+  "lastChangelogVersion": "1.1.0",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-flash",
   "defaultThinkingLevel": "high",
@@ -9,7 +9,7 @@
   },
   "steeringMode": "one-at-a-time",
   "hideThinkingBlock": true,
-  "theme": "dark/dark",
+  "theme": "system/system",
   "packages": [
     "npm:pi-web-access",
     "npm:pi-lens",
@@ -31,5 +31,6 @@
   "fullscreenScrollbar": "auto",
   "defaultTools": [
     "+codemode"
-  ]
+  ],
+  "deviceId": "07a01a8b-014c-4952-b2b0-1df1d5b1d49d"
 }

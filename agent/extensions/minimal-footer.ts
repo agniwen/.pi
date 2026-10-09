@@ -63,6 +63,7 @@ export default function (pi: ExtensionAPI) {
   let modelId: string | undefined;
   let contextWindow: number | undefined;
   let isDirty = false;
+  let disposed = false;
 
   // Keep values fresh so renders pick up changes immediately
   pi.on("model_select", async (event, _ctx) => {
@@ -78,35 +79,48 @@ export default function (pi: ExtensionAPI) {
   });
 
   async function refreshDirty() {
-    const insideWorkTree = await pi
-      .exec("git", ["rev-parse", "--is-inside-work-tree"], { cwd: pi.cwd })
-      .catch(() => undefined);
+    // pi.exec() throws synchronously once the session replaced or shut down, so the
+    // whole refresh has to be inside the try block, not only the exec promises.
+    if (disposed) return;
+    try {
+      const insideWorkTree = await pi
+        .exec("git", ["rev-parse", "--is-inside-work-tree"], { cwd: pi.cwd })
+        .catch(() => undefined);
 
-    if (insideWorkTree?.stdout.trim() !== "true") {
-      if (isDirty) {
-        isDirty = false;
+      if (disposed) return;
+      if (insideWorkTree?.stdout.trim() !== "true") {
+        if (isDirty) {
+          isDirty = false;
+          tuiRef?.requestRender();
+        }
+        return;
+      }
+
+      const result = await pi
+        .exec("git", ["diff", "--stat"], { cwd: pi.cwd })
+        .catch(() => undefined);
+      const resultStaged = await pi
+        .exec("git", ["diff", "--cached", "--stat"], { cwd: pi.cwd })
+        .catch(() => undefined);
+      const dirty =
+        (result?.stdout.trim().length ?? 0) > 0 ||
+        (resultStaged?.stdout.trim().length ?? 0) > 0;
+      if (dirty !== isDirty) {
+        isDirty = dirty;
         tuiRef?.requestRender();
       }
-      return;
-    }
-
-    const result = await pi
-      .exec("git", ["diff", "--stat"], { cwd: pi.cwd })
-      .catch(() => undefined);
-    const resultStaged = await pi
-      .exec("git", ["diff", "--cached", "--stat"], { cwd: pi.cwd })
-      .catch(() => undefined);
-    const dirty =
-      (result?.stdout.trim().length ?? 0) > 0 ||
-      (resultStaged?.stdout.trim().length ?? 0) > 0;
-    if (dirty !== isDirty) {
-      isDirty = dirty;
-      tuiRef?.requestRender();
+    } catch {
+      // Session ended mid-refresh; there is no footer left to update.
     }
   }
 
   pi.on("turn_end", () => {
     void refreshDirty();
+  });
+
+  pi.on("session_shutdown", () => {
+    disposed = true;
+    tuiRef = null;
   });
 
   function formatContextWindow(n: number | undefined): string {
