@@ -8,6 +8,7 @@ agent/sessions/
 agent/npm/
 agent/git/
 agent/bin/
+agent/install/
 node_modules/
 
 # Runtime / temp artifacts
