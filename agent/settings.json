@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.1.0",
+  "lastChangelogVersion": "1.5.0",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-flash",
   "defaultThinkingLevel": "high",
@@ -20,7 +20,8 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@narumitw/pi-plan-mode",
     "npm:@juicesharp/rpiv-todo",
-    "npm:pi-deepseek-search"
+    "npm:pi-deepseek-search",
+    "npm:pi-cc-extensions"
   ],
   "images": {
     "blockImages": true
@@ -28,5 +29,11 @@
   "defaultTools": [
     "+codemode"
   ],
-  "deviceId": "07a01a8b-014c-4952-b2b0-1df1d5b1d49d"
+  "deviceId": "07a01a8b-014c-4952-b2b0-1df1d5b1d49d",
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
+    "{\"source\":\"npm:pi-lens\",\"scope\":\"user\"}": "4.4.10",
+    "{\"source\":\"npm:pi-subagents\",\"scope\":\"user\"}": "0.87.0",
+    "{\"source\":\"npm:@narumitw/pi-plan-mode\",\"scope\":\"user\"}": "0.60.0"
+  }
 }
