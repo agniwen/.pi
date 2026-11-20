@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.5.0",
+  "lastChangelogVersion": "1.6.0",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-flash",
   "defaultThinkingLevel": "high",
@@ -10,7 +10,6 @@
   "hideThinkingBlock": true,
   "packages": [
     "npm:pi-web-access",
-    "npm:pi-lens",
     {
       "source": "npm:pi-subagents",
       "prompts": [
@@ -31,9 +30,9 @@
   ],
   "deviceId": "07a01a8b-014c-4952-b2b0-1df1d5b1d49d",
   "extensionChangelogVersions": {
-    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
-    "{\"source\":\"npm:pi-lens\",\"scope\":\"user\"}": "4.4.10",
-    "{\"source\":\"npm:pi-subagents\",\"scope\":\"user\"}": "0.87.0",
-    "{\"source\":\"npm:@narumitw/pi-plan-mode\",\"scope\":\"user\"}": "0.60.0"
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.48.0",
+    "{\"source\":\"npm:pi-subagents\",\"scope\":\"user\"}": "0.89.1",
+    "{\"source\":\"npm:@narumitw/pi-plan-mode\",\"scope\":\"user\"}": "0.60.3",
+    "{\"source\":\"npm:pi-cc-extensions\",\"scope\":\"user\"}": "1.0.21"
   }
 }
