@@ -12,6 +12,7 @@ agent/install/
 node_modules/
 
 # Runtime / temp artifacts
+/agent/pi-web-access/last-seen-version.json
 tmp/
 temp/
 cache/
@@ -27,7 +28,9 @@ agent/pi-subagents/
 # macOS metadata
 .DS_Store
 
-# Local/private overrides
+# Local/private configuration
+/agent/mcp.json
+/agent/models.json
 *.local.json
 .env
 .env.*
